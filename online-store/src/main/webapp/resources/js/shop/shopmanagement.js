@@ -10,6 +10,8 @@ $(function() {
 			}
 			$('#shopInfo')
 					.attr('href', '/online-store/shopadmin/shopoperation?shopId=' + shopId);
+			$('#productCategoryManagement')
+					.attr('href', '/online-store/shopadmin/productcategorylist?shopId=' + shopId);
 		}
 	});
 });

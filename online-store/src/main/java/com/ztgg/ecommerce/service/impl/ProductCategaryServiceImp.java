@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import com.ztgg.ecommerce.dao.ProductCategoryDao;
 import com.ztgg.ecommerce.entity.ProductCategory;
 import com.ztgg.ecommerce.service.ProductCategoryService;
+import com.ztgg.ecommerce.util.PageCalculator;
 
 @Service
 public class ProductCategaryServiceImp implements ProductCategoryService{
@@ -16,6 +17,7 @@ public class ProductCategaryServiceImp implements ProductCategoryService{
 
 	@Override
 	public List<ProductCategory> getProductCategaryList(ProductCategory productCategoryCondition, int pageIndex, int pageSize) {
-		return productCategoryDao.queryProductCategoryList(productCategoryCondition, pageIndex, pageSize);
+		int rowIndex = PageCalculator.calculateRowIndex(pageIndex, pageSize);
+		return productCategoryDao.queryProductCategoryList(productCategoryCondition, rowIndex, pageSize);
 	}
 }

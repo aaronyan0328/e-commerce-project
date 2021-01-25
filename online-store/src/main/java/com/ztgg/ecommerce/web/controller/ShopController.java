@@ -24,11 +24,13 @@ import com.ztgg.ecommerce.entity.User;
 import com.ztgg.ecommerce.enums.ShopStateEnum;
 import com.ztgg.ecommerce.exceptions.ShopOperationException;
 import com.ztgg.ecommerce.service.AreaService;
+import com.ztgg.ecommerce.service.ProductCategoryService;
 import com.ztgg.ecommerce.service.ShopCategoryService;
 import com.ztgg.ecommerce.service.ShopService;
 import com.ztgg.ecommerce.util.CodeUtil;
 import com.ztgg.ecommerce.util.HttpServletRequestUtil;
 import com.ztgg.ecommerce.entity.Area;
+import com.ztgg.ecommerce.entity.ProductCategory;
 import com.ztgg.ecommerce.entity.ShopCategory;
 
 
@@ -44,6 +46,9 @@ public class ShopController {
 	
 	@Autowired
 	private AreaService areaService;
+	
+	@Autowired
+	private ProductCategoryService productCategoryService;
 	
 	
 	@RequestMapping(value = "/getshopinitinfo", method = RequestMethod.GET)
@@ -152,6 +157,30 @@ public class ShopController {
 				List<Area> areaList = areaService.getAreaList();
 				modelMap.put("shop", shop);
 				modelMap.put("areaList", areaList);
+				modelMap.put("success", true);
+			} catch (Exception e) {
+				modelMap.put("success", false);
+				modelMap.put("errMsg", e.toString());
+			}
+		} else {
+			modelMap.put("success", false);
+			modelMap.put("errMsg", "empty shopId");
+		}
+		return modelMap;
+	}
+	
+	@RequestMapping(value = "/getproductcategorylist", method = RequestMethod.GET)
+	@ResponseBody
+	private Map<String, Object> getProductCategoryList(HttpServletRequest request) {
+		Map<String, Object> modelMap = new HashMap<String, Object>();
+		Long shopId = HttpServletRequestUtil.getLong(request, "shopId");
+		if (shopId > -1) {
+			try {
+				ProductCategory productCategoryCondition = new ProductCategory();
+				Shop shop = shopService.getByShopId(shopId);
+				productCategoryCondition.setShop(shop);
+				modelMap.put("productCategoryList", productCategoryService.getProductCategaryList(productCategoryCondition, 0, 10));
+				// put shoplist into session so that it will be accessible by this user in the session
 				modelMap.put("success", true);
 			} catch (Exception e) {
 				modelMap.put("success", false);

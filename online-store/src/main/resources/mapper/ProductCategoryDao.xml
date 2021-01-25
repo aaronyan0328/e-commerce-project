@@ -11,13 +11,13 @@
 		<result column="time_created" property="timeCreated" />
 		<result column="time_updated" property="timeUpdated" />
 		<association property="shop" column="shop_id"
-			javaType="Shop">
+			javaType="com.ztgg.ecommerce.entity.Shop">
 			<id column="shop_id" property="shopId" />
 			<result column="shop_name" property="shopName" />
 		</association>
 	</resultMap>
  	
- 	<select id = "queryProductCategoryList" resultType = "com.ztgg.ecommerce.entity.ProductCategory">
+ 	<select id = "queryProductCategoryList" resultMap = "ProductCategoryMap">
  		SELECT 
  		pc.product_category_id, 
  		pc.product_category_name, 
