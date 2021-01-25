@@ -3,6 +3,8 @@ package com.ztgg.ecommerce.dao;
 import static org.junit.Assert.assertEquals;
 
 import java.util.Date;
+import java.util.List;
+
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.junit.Ignore;
@@ -20,7 +22,7 @@ public class ShopDaoTest extends BaseTest {
 	@Test
 	@Ignore
 	public void testInsertShop() {
-		Shop shop = mockANewShop(1L, 4, 1L);
+		Shop shop = mockANewShop(123L, 4, 316L);
 		int effectedNum = shopDao.insertShop(shop);
 		assertEquals(1, effectedNum);
 	}
@@ -35,6 +37,31 @@ public class ShopDaoTest extends BaseTest {
 		shop.setTimeUpdated(new Date());
 		int effectedNum = shopDao.updateShop(shop);
 		assertEquals(1, effectedNum);
+	}
+	
+	@Test
+	@Ignore
+	public void testQueryByShopId() {
+		long shopId = 111;
+		Shop shop = shopDao.queryByShopId(shopId);
+		System.out.println("areaId: " + shop.getArea().getAreaId());
+		System.out.println("areaName: " + shop.getArea().getAreaName());
+		System.out.println("shopName: " + shop.getShopName());
+	}
+	
+	@Test
+//	@Ignore
+	public void testQueryShopListAndCount() {
+		Shop shopCondition = new Shop();
+		ShopCategory childCategory = new ShopCategory();
+		ShopCategory parentCategory = new ShopCategory();
+		parentCategory.setShopCategoryId(123L);
+		childCategory.setParent(parentCategory);
+		shopCondition.setShopCategory(childCategory);
+		List<Shop> shopList = shopDao.queryShopList(shopCondition, 0, 3);
+		int count = shopDao.queryShopCount(shopCondition);
+		System.out.println("shop count this page：" + shopList.size());
+		System.out.println("total shop count：" + count);		
 	}
 	
 	private Shop mockANewShop(Long userId, Integer areaId, Long shopCategoryId) {

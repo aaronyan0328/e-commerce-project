@@ -22,6 +22,12 @@ public class AreaController {
 	@Autowired
 	private AreaService areaService;
 	
+	@RequestMapping(value = "/hello",method = RequestMethod.GET)
+	@ResponseBody
+	private String testHello() {
+		return "HelloWorld from spring controller";
+	}
+	
 	@RequestMapping(value = "/listarea", method = RequestMethod.GET)
 	@ResponseBody
 	private Map<String, Object> listArea(){

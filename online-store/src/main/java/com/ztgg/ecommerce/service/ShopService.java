@@ -17,4 +17,32 @@ public interface ShopService {
 	 * @return
 	 */
 	ShopDto addShop(Shop shop, InputStream shopImgInputStream, String fileName) throws ShopOperationException;
+	
+	/**
+	 * get shop by ID
+	 * 
+	 * @param shopId
+	 * @return
+	 */
+	Shop getByShopId(long shopId);
+
+	/**
+	 * update shop Info
+	 * 
+	 * @param shop
+	 * @param shopImg
+	 * @return
+	 * @throws ShopOperationException
+	 */
+	ShopDto modifyShop(Shop shop, InputStream shopImgInputStream, String fileName) throws ShopOperationException;
+	
+	/**
+	 * return pagintaed shop list based on filters
+	 * 
+	 * @param shopCondition
+	 * @param pageIndex
+	 * @param pageSize
+	 * @return
+	 */
+	ShopDto getShopList(Shop shopCondition, int pageIndex, int pageSize);
 }

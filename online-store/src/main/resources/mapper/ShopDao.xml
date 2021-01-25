@@ -3,6 +3,36 @@
     PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ztgg.ecommerce.dao.ShopDao">
+
+	<resultMap type="com.ztgg.ecommerce.entity.Shop" id="shopMap">
+		<id column="shop_id" property="shopId" />
+		<result column="shop_name" property="shopName" />
+		<result column="shop_desc" property="shopDesc" />
+		<result column="shop_addr" property="shopAddr" />
+		<result column="phone" property="phone" />
+		<result column="shop_img" property="shopImg" />
+		<result column="priority" property="priority" />
+		<result column="time_created" property="timeCreated" />
+		<result column="time_updated" property="timeUpdated" />
+		<result column="enable_status" property="enableStatus" />
+		
+		<association property="area" column="area_id"
+			javaType="com.ztgg.ecommerce.entity.Area">
+			<id column="area_id" property="areaId" />
+			<result column="area_name" property="areaName" />
+		</association>
+		<association property="shopCategory" column="shop_category_id"
+			javaType="com.ztgg.ecommerce.entity.ShopCategory">
+			<id column="shop_category_id" property="shopCategoryId" />
+			<result column="shop_category_name" property="shopCategoryName" />
+		</association>
+		<association property="owner" column="user_id"
+			javaType="com.ztgg.ecommerce.entity.User">
+			<id column="user_id" property="userId" />
+			<result column="name" property="name" />
+		</association>
+	</resultMap>
+
 	<insert id="insertShop" useGeneratedKeys="true" keyColumn="shop_id"
 		keyProperty="shopId">
 		INSERT INTO
@@ -32,4 +62,142 @@
 		</set>
 		where shop_id=#{shopId}
 	</update>
+	
+	<select id="queryByShopId" resultMap="shopMap" parameterType="Long">
+		SELECT
+		s.shop_id,
+		s.shop_name,
+		s.shop_desc,
+		s.shop_addr,
+		s.phone,
+		s.shop_img,
+		s.priority,
+		s.time_created,
+		s.time_updated,
+		s.enable_status,
+		a.area_id,
+		a.area_name,
+		sc.shop_category_id,
+		sc.shop_category_name,
+		u.user_id
+		FROM
+		tb_shop s,
+		tb_area a,
+		tb_shop_category sc,
+		tb_user u
+		WHERE
+		s.area_id=a.area_id
+		AND
+		s.shop_category_id = sc.shop_category_id
+		AND
+		s.shop_id = #{shopId}
+	</select>
+	
+	<select id="queryShopList" resultMap="shopMap">
+		SELECT
+		s.shop_id,
+		s.shop_name,
+		s.shop_desc,
+		s.shop_addr,
+		s.phone,
+		s.shop_img,
+		s.priority,
+		s.time_created,
+		s.time_updated,
+		s.enable_status,
+		a.area_id,
+		a.area_name,
+		sc.shop_category_id,
+		sc.shop_category_name
+		FROM
+		tb_shop s,
+		tb_area a,
+		tb_shop_category sc
+		<where>
+			<if
+				test="shopCondition.shopCategory != null and 
+			shopCondition.shopCategory.shopCategoryId != null">
+				and s.shop_category_id =
+				#{shopCondition.shopCategory.shopCategoryId}
+			</if>
+			<if
+				test="shopCondition.shopCategory != null 
+			and shopCondition.shopCategory.parent!=null 
+			and shopCondition.shopCategory.parent.shopCategoryId !=null">
+				and s.shop_category_id in (select shop_category_id from
+				tb_shop_category
+				WHERE parent_id =
+				#{shopCondition.shopCategory.parent.shopCategoryId})
+			</if>
+			<if
+				test="shopCondition.area != null and 
+			shopCondition.area.areaId != null">
+				and s.area_id =
+				#{shopCondition.area.areaId}
+			</if>
+			<if test="shopCondition.shopName != null">
+				and s.shop_name like '%${shopCondition.shopName}%'
+			</if>
+			<if test="shopCondition.enableStatus != null">
+				and s.enable_status = #{shopCondition.enableStatus}
+			</if>
+			<if
+				test="shopCondition.owner != null and shopCondition.owner.userId != null">
+				and s.owner_id = #{shopCondition.owner.userId}
+			</if>
+			AND
+			s.area_id=a.area_id
+			AND
+			s.shop_category_id = sc.shop_category_id
+		</where>
+		ORDER BY
+		s.priority DESC
+		LIMIT #{rowIndex},#{pageSize};
+	</select>
+	
+	<select id="queryShopCount" resultType="int">
+		SELECT
+		count(1)
+		FROM
+		tb_shop s,
+		tb_area a,
+		tb_shop_category sc
+		<where>
+			<if
+				test="shopCondition.shopCategory != null and 
+			shopCondition.shopCategory.shopCategoryId != null">
+				and s.shop_category_id =
+				#{shopCondition.shopCategory.shopCategoryId}
+			</if>
+			<if
+				test="shopCondition.shopCategory != null 
+			and shopCondition.shopCategory.parent!=null 
+			and shopCondition.shopCategory.parent.shopCategoryId !=null">
+				and s.shop_category_id in (select shop_category_id from
+				tb_shop_category
+				WHERE parent_id =
+				#{shopCondition.shopCategory.parent.shopCategoryId})
+			</if>
+			<if
+				test="shopCondition.area != null and 
+			shopCondition.area.areaId != null">
+				and s.area_id =
+				#{shopCondition.area.areaId}
+			</if>
+			<if test="shopCondition.shopName != null">
+				and s.shop_name like '%${shopCondition.shopName}%'
+			</if>
+			<if test="shopCondition.enableStatus != null">
+				and s.enable_status = #{shopCondition.enableStatus}
+			</if>
+			<if
+				test="shopCondition.owner != null and shopCondition.owner.userId != null">
+				and s.owner_id = #{shopCondition.owner.userId}
+			</if>
+			AND
+			s.area_id=a.area_id
+			AND
+			s.shop_category_id = sc.shop_category_id
+		</where>
+	</select>
 </mapper>

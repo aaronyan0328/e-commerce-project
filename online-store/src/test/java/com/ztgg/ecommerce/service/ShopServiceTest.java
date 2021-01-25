@@ -8,6 +8,7 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.Date;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -26,12 +27,36 @@ public class ShopServiceTest extends BaseTest {
 	private ShopService shopService;
 
 	@Test
+	@Ignore
 	public void testAddShop() throws ShopOperationException, FileNotFoundException {
 		Shop shop = mockANewShop(1L, 2, 1L);
 		File shopImg = new File("/Users/youzhedou/Desktop/workspace/online-store/src/main/resources/test-images/bookstoreimg.png");
 		InputStream inputStream = new FileInputStream(shopImg);
 		ShopDto shopDto = shopService.addShop(shop, inputStream, shopImg.getName());
 		assertEquals(ShopStateEnum.CHECK.getState(), shopDto.getState());
+	}
+	
+	@Test
+	@Ignore
+	public void testModifyShop() throws ShopOperationException, FileNotFoundException {
+		Shop shop = new Shop();
+		shop.setShopId(15L);
+		shop.setShopName("new name after modify");
+		File shopImg = new File("/Users/youzhedou/Desktop/workspace/online-store/src/main/resources/test-images/newbookstore.png");
+		InputStream is = new FileInputStream(shopImg);
+		ShopDto shopExecution = shopService.modifyShop(shop, is, "newbookstore.png");
+		System.out.println("new image file：" + shopExecution.getShop().getShopImg());
+	}
+	
+	@Test
+	public void testGetShopList() {
+		Shop shopCondition = new Shop();
+		ShopCategory sc = new ShopCategory();
+		sc.setShopCategoryId(2L);
+		shopCondition.setShopCategory(sc);
+		ShopDto shopDto = shopService.getShopList(shopCondition, 0, 4);
+		System.out.println("shop count this page：" + shopDto.getShopList().size());
+		System.out.println("total shop count：" + shopDto.getCount());
 	}
 	
 	private Shop mockANewShop(Long userId, Integer areaId, Long shopCategoryId) {

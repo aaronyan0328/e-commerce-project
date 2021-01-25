@@ -8,7 +8,7 @@ public class ProductCategory {
 	private Integer priority;
 	private Date timeCreated;
 	private Date timeUpdated;
-	private Long shopId;
+	private Shop shop;
 	public Long getProductCategoryId() {
 		return productCategoryId;
 	}
@@ -39,11 +39,11 @@ public class ProductCategory {
 	public void setTimeUpdated(Date timeUpdated) {
 		this.timeUpdated = timeUpdated;
 	}
-	public Long getShopId() {
-		return shopId;
+	public Shop getShop() {
+		return shop;
 	}
-	public void setShopId(Long shopId) {
-		this.shopId = shopId;
+	public void setShop(Shop shop) {
+		this.shop = shop;
 	}
 	
 }
